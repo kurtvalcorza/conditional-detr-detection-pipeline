@@ -2,7 +2,7 @@
 
 DIMER pipeline for **Conditional DETR with a ResNet-50 backbone** (`microsoft/conditional-detr-resnet-50`), a DETR variant whose conditional spatial queries in the decoder make training converge faster, trained on COCO 2017 with a sigmoid focal class loss. The pipeline loads the checkpoint only from a digest-verified local snapshot, returns pixel-space boxes with the model's per-class sigmoid score under a caller-owned threshold, and adds a bounded fine-tuning workflow that re-heads it onto a new class vocabulary and exports a SafeTensors adapter.
 
-> **The upstream snapshot is pinned** to Hub commit `8f8795fb7c319c7862d4f4cd699e76bb09cf2593` (pinned 2026-09-25). The manifest records every file's byte size and SHA-256, and each LFS digest matched the Hub's record. No execution with the pinned weights is recorded yet (see [Release status](#release-status)).
+> **The upstream snapshot is pinned** to Hub commit `8f8795fb7c319c7862d4f4cd699e76bb09cf2593` (pinned 2026-09-25). The manifest records every file's byte size and SHA-256, and each LFS digest matched the Hub's record. Default-path execution recorded on 2026-09-25 (Kaggle T4); REL12 BYOD exercise pending before promotion (see [Release status](#release-status)).
 
 ## Upstream alignment
 
@@ -65,7 +65,7 @@ weights/conditional-detr-resnet-50/
 
 ## Release status
 
-**Candidate.** The snapshot is pinned (`8f8795f`), but no execution with the pinned weights is recorded. Static checks, unit tests and the tiny-model test do not constitute notebook execution evidence; `docs/release-verification.md` defines the release gate.
+**Candidate.** The snapshot is pinned (`8f8795f`). Default-path execution recorded on 2026-09-25 (Kaggle T4, commit `8824795`, 14/14 code cells); REL12 BYOD exercise pending before promotion. Static checks, unit tests and the tiny-model test do not constitute notebook execution evidence; `docs/release-verification.md` defines the release gate.
 
 ## Documentation
 

@@ -18,7 +18,7 @@ date_published_source: "month of the Conditional DETR paper and first code relea
 > ⚠️ **Provided for research, training, and evaluation purposes only.** Model weights are redistributed unmodified under their upstream license, which controls your use, including any commercial use or redistribution; the accompanying code and notebooks are released under this repository's license. All of it is supplied **"as is"**, without warranty of any kind, and has not been validated for production, clinical, or safety-critical use. Running the notebooks downloads third-party weights and datasets governed by their own licenses and consumes compute on your own Colab/Kaggle account. To the maximum extent permitted by law, the maintainers of this repository and the DIMER platform accept no liability for any damages arising from their use. Hosting implies no affiliation with or endorsement by the original authors.
 
 > [!IMPORTANT]
-> The upstream snapshot is pinned to Hub commit `8f8795fb7c319c7862d4f4cd699e76bb09cf2593`, and the manifest records every file's SHA-256. No execution with the pinned weights has been recorded yet, so this card claims no measured value for this repository.
+> The upstream snapshot is pinned to Hub commit `8f8795fb7c319c7862d4f4cd699e76bb09cf2593`, and the manifest records every file's SHA-256. Default-path execution recorded on 2026-09-25 (Kaggle T4); REL12 BYOD exercise pending before promotion. The values this card quotes come from that one run: one seeded split of drawn (synthetic) images, one runtime, no dispersion estimate.
 
 ---
 
@@ -32,7 +32,7 @@ date_published_source: "month of the Conditional DETR paper and first code relea
 
 #### Description
 
-`microsoft/conditional-detr-resnet-50` is the Hugging Face Transformers release of Conditional DETR with a ResNet-50 backbone, from "Conditional DETR for Fast Training Convergence" (Meng et al., arXiv:2108.06152). The snapshot's `config.json` declares `ConditionalDETRForObjectDetection` with a `timm` `resnet50` backbone, a 6-layer encoder and a 6-layer decoder at hidden size 256, and 300 learned object queries (`num_queries`). This repository has not counted the parameters.
+`microsoft/conditional-detr-resnet-50` is the Hugging Face Transformers release of Conditional DETR with a ResNet-50 backbone, from "Conditional DETR for Fast Training Convergence" (Meng et al., arXiv:2108.06152). The snapshot's `config.json` declares `ConditionalDETRForObjectDetection` with a `timm` `resnet50` backbone, a 6-layer encoder and a 6-layer decoder at hidden size 256, and 300 learned object queries (`num_queries`). With the class head replaced for the tutorial's three sign classes, the model has 43,395,785 parameters, of which 19,940,873 are trainable with the backbone frozen (counted in the recorded run; the 91-slot COCO head is slightly larger).
 
 Conditional DETR keeps DETR's set-prediction design and changes the decoder's cross-attention. Each query learns a conditional spatial query from its own decoder embedding, so each attention head can attend to one band of the image, such as one object extremity. The paper reports that this makes training converge 6.7× faster than DETR for the R50 backbone; this repository does not reproduce that result.
 
@@ -102,7 +102,7 @@ The tutorial's sample data is itself an instrument: Pillow drawings with flat co
 
 ###### Environment
 
-**Operating environment.** Python 3.12 with the pins in `pyproject.toml`: `torch==2.14.0`, `torchvision==0.29.0`, `torchaudio==2.11.0`, `transformers==4.57.6`, `timm==1.0.29`, `scipy==1.18.1`, `safetensors==0.8.0`, `numpy==2.5.3`, `pillow==11.3.0`, `huggingface-hub==0.36.2`. Computation is float32. The code runs on CPU and uses CUDA automatically when available. `timm` builds the ResNet-50 backbone, and `scipy` supplies the Hungarian matcher the fine-tuning loss needs. No run with the pinned weights has been recorded yet, so no runtime, memory or throughput figure is given.
+**Operating environment.** Python 3.12 with the pins in `pyproject.toml`: `torch==2.14.0`, `torchvision==0.29.0`, `torchaudio==2.11.0`, `transformers==4.57.6`, `timm==1.0.29`, `scipy==1.18.1`, `safetensors==0.8.0`, `numpy==2.5.3`, `pillow==11.3.0`, `huggingface-hub==0.36.2`. Computation is float32. The code runs on CPU and uses CUDA automatically when available. `timm` builds the ResNet-50 backbone, and `scipy` supplies the Hungarian matcher the fine-tuning loss needs. One default-path run is recorded (Kaggle Tesla T4, Python 3.12.13, torch 2.14.0+cu130): the pass that followed the restart after the install cell ran top-to-bottom in 91.0 s, of which the 10 fine-tuning epochs on 30 images took 33.5 s. No memory or throughput figure was measured.
 
 **Data environment.** The pretrained model assumes a photograph of an everyday scene containing COCO objects. An adapted model assumes inference images that resemble its training images in camera, scene and object appearance. The tutorial's adaptation data is synthetic, so a model adapted on it transfers to drawn signs of the same style and to nothing else. When these assumptions fail, the model still returns boxes. The pipeline reports no signal that the distribution has shifted.
 
@@ -120,7 +120,14 @@ AP summarises the precision–recall trade-off over all score levels, so it does
 
 `evaluation_report(result, ground_truth_boxes)` covers one image. It reports one `box_iou` per supplied reference box, against the best-overlapping detection **of the same label**, with the verdict `sample-sanity`. Without references it returns `not-measurable` and names the labelled data that would be needed.
 
-The pinned README reports no COCO AP value; the paper's COCO results are in arXiv:2108.06152 and are not reproduced here. No value from this repository has been recorded yet.
+The pinned README reports no COCO AP value; the paper's COCO results are in arXiv:2108.06152 and are not reproduced here.
+
+**Recorded values (one default-path run, 2026-09-25, Kaggle Tesla T4, commit `8824795`).** All numbers come from the run's `conditional_detr_detection_result.json` and `conditional_detr_detection_evaluation_report.json`. They describe drawn images, one seeded split (`DATASET_SEED`, `SEED` and `NEW_DATA_SEED` at their defaults), one runtime and one pass, with no dispersion estimate; they are tutorial evidence, not a benchmark.
+
+- Pretrained COCO head on the 640×480 drawn scene at `threshold = 0.7`: 2 detections. `stop sign` (score 0.871) with box IoU 0.850 against its drawn reference, `clock` (0.797) with IoU 0.918. The drawn `traffic light` and `sports ball` were not detected (IoU 0.0): 2 of 4 drawn objects matched at IoU ≥ 0.5.
+- Adaptation to three sign classes (40 drawn images, 82 boxes; 30 training and 10 held-out images, 17 held-out boxes; 10 epochs, backbone frozen): baseline (re-headed, untrained) `ap` 0.0, `ap50` 0.0, `ap75` 0.0; adapted `ap` 0.7722, `ap50` 0.8851, `ap75` 0.8851; adapted per-class AP50 `stop-sign` 0.9010, `yield-sign` 0.7542, `speed-limit-sign` 1.0. Training loss fell from 1.3464 (epoch 1) to 0.5423 (epoch 10).
+- New-data inference: on 3 unseen drawn images (5 reference signs, `NEW_DATA_SEED = 99`), the adapted model returned **0 detections** at the default `threshold = 0.7`, so every same-label IoU is 0.0. The held-out AP above is computed at the evaluation threshold 0.05; at the deployment-style default threshold this adapter found nothing on new images. Its scores after 10 epochs sit below 0.7, so the default threshold is unsuitable for this adapter as trained.
+- Adapter reload: the exported adapter, reloaded onto a fresh base model, reproduced 56 detections within tolerance 0.001.
 
 ###### Decision thresholds
 
@@ -173,7 +180,7 @@ Some sensitive uses are foreseeable although not intended: pedestrian detection 
 
 ###### Risks and harms
 
-- **Boxes on empty or unfamiliar input.** The model can return boxes for images that contain no object of any trained class. The operator and any downstream consumer bear the harm of a fabricated count or alert. Likelihood on real empty frames is unmeasured; the tutorial probes a blank and a noise image and records what it finds.
+- **Boxes on empty or unfamiliar input.** The model can return boxes for images that contain no object of any trained class. The operator and any downstream consumer bear the harm of a fabricated count or alert. Likelihood on real empty frames is unmeasured. In the recorded run the pretrained model returned 0 boxes on the blank probe at both 0.7 and 0.05, and 0 boxes on the noise probe at 0.7 but 100 boxes at the evaluation threshold 0.05 (top scores 0.117 `orange`, 0.110 `apple`, 0.104 `fire hydrant`).
 - **Missed objects.** An object that is small, occluded or rendered unusually is simply absent from the output, and no field flags the miss. The harm falls on whoever relies on the detection being complete.
 - **Mislabelling within a closed vocabulary.** An object outside the vocabulary that resembles a class is labelled as that class. Systems that act on labels inherit the error.
 - **Overfitting in adaptation.** A fine-tune on a few dozen images can score well on a held-out split drawn from the same source and fail on anything else. The operator who deploys it bears the harm, which is realised whenever training and deployment images differ.
@@ -217,7 +224,7 @@ The following uses are prohibited even where the model would work:
 
 ## Verification records
 
-No execution with the pinned weights has been recorded. The offline test suite runs a tiny random-weight Conditional DETR through fine-tuning, evaluation and adapter reload; that exercises the code path and is not a result about this model. `docs/release-verification.md` holds the release gate and the record table.
+Default-path execution recorded on 2026-09-25 (Kaggle T4, commit `8824795`, notebook blob `7204a8c9db12`, 14/14 code cells after the documented restart following the install cell); REL12 BYOD exercise pending before promotion. The measured values are listed under Performance Measures. The offline test suite runs a tiny random-weight Conditional DETR through fine-tuning, evaluation and adapter reload; that exercises the code path and is not a result about this model. `docs/release-verification.md` holds the release gate and the record table.
 
 ## References
 
