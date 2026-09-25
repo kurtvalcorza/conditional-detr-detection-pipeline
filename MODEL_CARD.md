@@ -18,7 +18,7 @@ date_published_source: "month of the Conditional DETR paper and first code relea
 > ⚠️ **Provided for research, training, and evaluation purposes only.** Model weights are redistributed unmodified under their upstream license, which controls your use, including any commercial use or redistribution; the accompanying code and notebooks are released under this repository's license. All of it is supplied **"as is"**, without warranty of any kind, and has not been validated for production, clinical, or safety-critical use. Running the notebooks downloads third-party weights and datasets governed by their own licenses and consumes compute on your own Colab/Kaggle account. To the maximum extent permitted by law, the maintainers of this repository and the DIMER platform accept no liability for any damages arising from their use. Hosting implies no affiliation with or endorsement by the original authors.
 
 > [!IMPORTANT]
-> The upstream snapshot is **not yet pinned**. `MODEL_REVISION` is the sentinel `"unpinned"` and the manifest records no SHA-256 digests. Until `python tools/pin_snapshot.py` records an immutable commit and every file's digest, the package refuses to stage, verify or load the weights, and the tutorial cannot run.
+> The upstream snapshot is pinned to Hub commit `8f8795fb7c319c7862d4f4cd699e76bb09cf2593`, and the manifest records every file's SHA-256. No execution with the pinned weights has been recorded yet, so this card claims no measured value for this repository.
 
 ---
 
@@ -42,7 +42,7 @@ The pretrained weights come from supervised training on COCO 2017. This reposito
 
 What this repository adds to the upstream weights:
 
-- `verify_snapshot` and `stage_missing_files`: manifest checks and staging of the pinned files, both refusing to run while the snapshot is unpinned;
+- `verify_snapshot` and `stage_missing_files`: manifest checks and staging of the pinned files, both refusing to run if `MODEL_REVISION` is ever reset to the `"unpinned"` sentinel;
 - `ConditionalDetrDetectionPipeline.from_pretrained`: loading from the verified directory only, with `trust_remote_code=False`, `local_files_only=True` and `use_pretrained_backbone=False`;
 - `detect` and `detect_many`: input checks, threshold checks, and score-sorted pixel-space output;
 - `validate_inputs`, `validate_dataset`, `read_detection_records` and `evaluation_report`: the validation and single-image evaluation stages;
@@ -196,9 +196,9 @@ The following uses are prohibited even where the model would work:
 ## Immutable provenance
 
 - Model: `microsoft/conditional-detr-resnet-50`
-- Revision: **not yet pinned** (`MODEL_REVISION = "unpinned"`). `python tools/pin_snapshot.py` resolves the Hub's `main` to a 40-hex commit, downloads every manifest file at that commit, and records each file's SHA-256.
-- Snapshot manifest: `weights/conditional-detr-resnet-50/dimer-base-manifest.json`, 4 files, `totalBytes` 174178149. The byte sizes are the ones the Hub reported for its `main` branch when this repository was built.
-- `model.safetensors`: 174,168,748 bytes; SHA-256 not yet recorded.
+- Revision: `8f8795fb7c319c7862d4f4cd699e76bb09cf2593` (pinned 2026-09-25 by `python tools/pin_snapshot.py`, which resolved the Hub's `main` to this commit, downloaded every manifest file at it, and recorded each file's SHA-256).
+- Snapshot manifest: `weights/conditional-detr-resnet-50/dimer-base-manifest.json`, 4 files, `totalBytes` 174178149. The byte sizes and digests describe the files at the pinned commit.
+- `model.safetensors`: 174,168,748 bytes; SHA-256 `e8553b4fa875b7d67d15609e140f969563742b4ee17b75d9095612a8f00d3ed8` (matches the Hub's LFS record).
 - `config.json`: 4,430 bytes; `ConditionalDETRForObjectDetection`, `timm` `resnet50` backbone, 300 queries, 91 label slots, `focal_alpha` 0.25.
 - `preprocessor_config.json`: 301 bytes; `ConditionalDetrImageProcessor`, shorter side 800 px, longer side at most 1333 px, ImageNet normalisation.
 - `README.md`: 4,670 bytes; the upstream model card.

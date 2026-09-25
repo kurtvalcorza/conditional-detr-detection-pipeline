@@ -24,7 +24,7 @@ import numpy as np
 from PIL import Image
 
 MODEL_ID = "microsoft/conditional-detr-resnet-50"
-MODEL_REVISION = "unpinned"
+MODEL_REVISION = "8f8795fb7c319c7862d4f4cd699e76bb09cf2593"
 MODEL_LICENSE = "apache-2.0"
 MODEL_KEY = "conditional-detr-resnet-50"
 DEFAULT_WEIGHTS_DIR = Path(__file__).resolve().parents[2] / "weights" / MODEL_KEY

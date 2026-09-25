@@ -3,27 +3,27 @@
   "formatVersion": 1,
   "modelKey": "conditional-detr-resnet-50",
   "modelId": "microsoft/conditional-detr-resnet-50",
-  "revision": "unpinned",
+  "revision": "8f8795fb7c319c7862d4f4cd699e76bb09cf2593",
   "files": [
     {
       "path": "README.md",
       "bytes": 4670,
-      "sha256": null
+      "sha256": "5d52a4482b43b9e0878e3f064b67cce755d7a711bb1f97a04c78bdcaca7cd1be"
     },
     {
       "path": "config.json",
       "bytes": 4430,
-      "sha256": null
+      "sha256": "fcfbd78ef41c09c7c03deec222f54f5cbb0f48df1b8ab63c7a8a7c6b07fc921d"
     },
     {
       "path": "model.safetensors",
       "bytes": 174168748,
-      "sha256": null
+      "sha256": "e8553b4fa875b7d67d15609e140f969563742b4ee17b75d9095612a8f00d3ed8"
     },
     {
       "path": "preprocessor_config.json",
       "bytes": 301,
-      "sha256": null
+      "sha256": "02fc8fed4724f0c24e7a402805c741c68de93e6693df9a392fa31357330eb9a6"
     }
   ],
   "totalBytes": 174178149
