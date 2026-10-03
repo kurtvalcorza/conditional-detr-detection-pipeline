@@ -2,7 +2,7 @@
 
 DIMER pipeline for **Conditional DETR with a ResNet-50 backbone** (`microsoft/conditional-detr-resnet-50`), a DETR variant whose conditional spatial queries in the decoder make training converge faster, trained on COCO 2017 with a sigmoid focal class loss. The pipeline loads the checkpoint only from a digest-verified local snapshot, returns pixel-space boxes with the model's per-class sigmoid score under a caller-owned threshold, and adds a bounded fine-tuning workflow that re-heads it onto a new class vocabulary and exports a SafeTensors adapter.
 
-> **The upstream snapshot is pinned** to Hub commit `8f8795fb7c319c7862d4f4cd699e76bb09cf2593` (pinned 2026-09-25). The manifest records every file's byte size and SHA-256, and each LFS digest matched the Hub's record. Default-path execution recorded on 2026-09-25 (Kaggle T4); REL12 BYOD exercise pending before promotion (see [Release status](#release-status)).
+> **The upstream snapshot is pinned** to Hub commit `8f8795fb7c319c7862d4f4cd699e76bb09cf2593` (pinned 2026-09-25). The manifest records every file's byte size and SHA-256, and each LFS digest matched the Hub's record. A Kaggle T4 default-path run on 2026-09-25 completed only after a manual restart (not a one-pass `Run all`); the 2026-10-03 revision has no hosted run yet; REL12 BYOD exercise pending (see [Release status](#release-status)).
 
 ## Upstream alignment
 
@@ -61,11 +61,11 @@ weights/conditional-detr-resnet-50/
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kurtvalcorza/conditional-detr-detection-pipeline/blob/main/tutorials/conditional_detr_detection_colab.ipynb)
 
-`tutorials/conditional_detr_detection_colab.ipynb` is declared `E2E` / `GUIDED` under DIMER Notebook Specification 2.1 and is **standalone** (§4): `tools/build_notebook.py` generates it, and it carries the package modules, the model identity, the manifest and the runtime pins, so it runs without this repository. Its default `Run all` path detects on a drawn COCO scene, probes a blank and a noise image, validates a 40-image drawn sign dataset, measures a baseline, fine-tunes, evaluates the held-out split with COCO-style AP, detects on unseen images, and exports and reloads the adapter. BYOD image and dataset branches are off by default. See `tutorials/README.md` and `docs/release-verification.md`.
+`tutorials/conditional_detr_detection_colab.ipynb` is declared `E2E` / `GUIDED` under DIMER Notebook Specification 2.2 and is **standalone** (§4); since 2026-10-03 the tutorial builds its own isolated `uv` Python 3.12.12 environment from the hash-locked `tutorials/requirements-colab.lock.txt` and runs every later cell there, so nothing is installed into the kernel and `Run all` needs no restart (**Linux x86_64 runtimes only**): `tools/build_notebook.py` generates it, and it carries the package modules, the model identity, the manifest and the runtime pins, so it runs without this repository. Its default `Run all` path detects on a drawn COCO scene, probes a blank and a noise image, validates a 40-image drawn sign dataset, measures a baseline, fine-tunes, evaluates the held-out split with COCO-style AP and, separately, what the adapted model returns at the operating threshold 0.7 (nothing, in the recorded runs: its scores stay below about 0.27), runs it on unseen images, and exports and reloads the adapter. BYOD image and dataset branches are off by default. See `tutorials/README.md` and `docs/release-verification.md`.
 
 ## Release status
 
-**Candidate.** The snapshot is pinned (`8f8795f`). Default-path execution recorded on 2026-09-25 (Kaggle T4, commit `8824795`, 14/14 code cells); REL12 BYOD exercise pending before promotion. Static checks, unit tests and the tiny-model test do not constitute notebook execution evidence; `docs/release-verification.md` defines the release gate.
+**Candidate.** The snapshot is pinned (`8f8795f`). The 2026-09-25 Kaggle T4 default-path run (commit `8824795`, 14/14 code cells) needed a manual restart after the install cell, so it is not a one-pass `Run all` and not promotion evidence; the 2026-10-03 review-fix revision (uv isolated environment) needs a one-pass hosted run, and the REL12 BYOD exercise is pending. Static checks, unit tests and the tiny-model test do not constitute notebook execution evidence; `docs/release-verification.md` defines the release gate.
 
 ## Documentation
 

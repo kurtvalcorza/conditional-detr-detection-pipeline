@@ -18,7 +18,7 @@ date_published_source: "month of the Conditional DETR paper and first code relea
 > ⚠️ **Provided for research, training, and evaluation purposes only.** Model weights are redistributed unmodified under their upstream license, which controls your use, including any commercial use or redistribution; the accompanying code and notebooks are released under this repository's license. All of it is supplied **"as is"**, without warranty of any kind, and has not been validated for production, clinical, or safety-critical use. Running the notebooks downloads third-party weights and datasets governed by their own licenses and consumes compute on your own Colab/Kaggle account. To the maximum extent permitted by law, the maintainers of this repository and the DIMER platform accept no liability for any damages arising from their use. Hosting implies no affiliation with or endorsement by the original authors.
 
 > [!IMPORTANT]
-> The upstream snapshot is pinned to Hub commit `8f8795fb7c319c7862d4f4cd699e76bb09cf2593`, and the manifest records every file's SHA-256. Default-path execution recorded on 2026-09-25 (Kaggle T4); REL12 BYOD exercise pending before promotion. The values this card quotes come from that one run: one seeded split of drawn (synthetic) images, one runtime, no dispersion estimate.
+> The upstream snapshot is pinned to Hub commit `8f8795fb7c319c7862d4f4cd699e76bb09cf2593`, and the manifest records every file's SHA-256. A default-path execution was recorded on 2026-09-25 (Kaggle T4); it needed a manual restart after the install cell, so it is not a one-pass `Run all`, and the tutorial now runs in an isolated `uv` environment instead (Linux x86_64 runtimes only). REL12 BYOD exercise pending before promotion. The values this card quotes come from that one run: one seeded split of drawn (synthetic) images, one runtime, no dispersion estimate.
 
 ---
 
@@ -55,7 +55,7 @@ The uses below are the ones the package was built to support. Everything else is
 
 ###### Primary Intended Uses
 
-The task is closed-vocabulary object detection. `detect` takes one `PIL.Image.Image` and a threshold. It returns at most 300 detections, each an xyxy box in input pixels, a `label` from the model's class slots, and a `score`, sorted by score.
+The task is closed-vocabulary object detection. `detect` takes one `PIL.Image.Image` and a threshold. It returns at most 300 detections (`MAX_DETECTIONS`, passed to the post-processor as `top_k`; before 2026-10-03 the post-processor's own default silently capped it at 100), each an xyxy box in input pixels, a `label` from the model's class slots, and a `score`, sorted by score.
 
 The pretrained vocabulary fits everyday scenes: people and vehicles in street imagery, animals, furniture and household objects indoors, sports and food. The adaptation path fits a small labelled set in a new vocabulary, for example signage, parts or equipment that COCO does not name.
 
@@ -180,7 +180,7 @@ Some sensitive uses are foreseeable although not intended: pedestrian detection 
 
 ###### Risks and harms
 
-- **Boxes on empty or unfamiliar input.** The model can return boxes for images that contain no object of any trained class. The operator and any downstream consumer bear the harm of a fabricated count or alert. Likelihood on real empty frames is unmeasured. In the recorded run the pretrained model returned 0 boxes on the blank probe at both 0.7 and 0.05, and 0 boxes on the noise probe at 0.7 but 100 boxes at the evaluation threshold 0.05 (top scores 0.117 `orange`, 0.110 `apple`, 0.104 `fire hydrant`).
+- **Boxes on empty or unfamiliar input.** The model can return boxes for images that contain no object of any trained class. The operator and any downstream consumer bear the harm of a fabricated count or alert. Likelihood on real empty frames is unmeasured. In the recorded run the pretrained model returned 0 boxes on the blank probe at both 0.7 and 0.05, and 0 boxes on the noise probe at 0.7 but 100 boxes at the evaluation threshold 0.05 (top scores 0.117 `orange`, 0.110 `apple`, 0.104 `fire hydrant`). That 100 was the post-processor's default cap, not a property of the model; with the documented 300 cap a local CPU run on 2026-10-03 returned 156 boxes at 0.05 on the same noise image, with the same top scores.
 - **Missed objects.** An object that is small, occluded or rendered unusually is simply absent from the output, and no field flags the miss. The harm falls on whoever relies on the detection being complete.
 - **Mislabelling within a closed vocabulary.** An object outside the vocabulary that resembles a class is labelled as that class. Systems that act on labels inherit the error.
 - **Overfitting in adaptation.** A fine-tune on a few dozen images can score well on a held-out split drawn from the same source and fail on anything else. The operator who deploys it bears the harm, which is realised whenever training and deployment images differ.
@@ -224,7 +224,7 @@ The following uses are prohibited even where the model would work:
 
 ## Verification records
 
-Default-path execution recorded on 2026-09-25 (Kaggle T4, commit `8824795`, notebook blob `7204a8c9db12`, 14/14 code cells after the documented restart following the install cell); REL12 BYOD exercise pending before promotion. The measured values are listed under Performance Measures. The offline test suite runs a tiny random-weight Conditional DETR through fine-tuning, evaluation and adapter reload; that exercises the code path and is not a result about this model. `docs/release-verification.md` holds the release gate and the record table.
+Default-path execution recorded on 2026-09-25 (Kaggle T4, commit `8824795`, notebook blob `7204a8c9db12`, 14/14 code cells only after a manual restart following the install cell — not a one-pass `Run all`, not promotion evidence); the 2026-10-03 revision of the tutorial (isolated `uv` environment, review fixes) has a local CPU pre-flight only; REL12 BYOD exercise pending before promotion. The measured values are listed under Performance Measures. The offline test suite runs a tiny random-weight Conditional DETR through fine-tuning, evaluation and adapter reload; that exercises the code path and is not a result about this model. `docs/release-verification.md` holds the release gate and the record table.
 
 ## References
 
