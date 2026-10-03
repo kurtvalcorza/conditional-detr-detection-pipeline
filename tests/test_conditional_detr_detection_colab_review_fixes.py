@@ -303,3 +303,75 @@ def test_a_second_image_upload_replaces_the_first(notebook_run, monkeypatch):
     run(13, USE_BYOD_IMAGE="True")
     assert ns["image_path"].name == "z_second.png"
     assert sorted(p.name for p in ns["image_path"].parent.iterdir()) == ["z_second.png"]
+
+
+# ---------------------------------------------------------------- CDT-M2 option B: adapted threshold on the training split
+
+
+def test_adapted_threshold_is_chosen_on_the_training_split_only(notebook_run, monkeypatch):
+    ns, _run, nb = notebook_run
+    assert "adapted_threshold = select_adapted_threshold(adapter, train_records)" in _section_code(nb, 9)
+    chosen = ns["adapted_threshold"]
+    assert chosen["selected_on"] == "training split" and ns["ADAPTED_THRESHOLD"] == chosen["threshold"]
+    seen = []
+    original = TinyPipeline.detect
+
+    def spy(self, image, **kwargs):
+        seen.append(id(image))
+        return original(self, image, **kwargs)
+
+    monkeypatch.setattr(TinyPipeline, "detect", spy)
+    again = ns["select_adapted_threshold"](ns["adapter"], ns["train_records"])
+    assert again == chosen  # deterministic, and reproducible from the training split alone
+    train_ids = {id(r["image"]) for r in ns["train_records"]}
+    assert seen and set(seen) <= train_ids  # never a held-out or unseen image
+    assert not set(seen) & {id(r["image"]) for r in ns["held_out"] + ns["new_records"]}
+
+
+def test_adapted_threshold_is_reported_next_to_the_coco_view(notebook_run):
+    ns, _run, _nb = notebook_run
+    row = ns["new_data_rows"][0]
+    assert row["threshold"] == 0.7 and row["adapted_threshold"] == ns["ADAPTED_THRESHOLD"]
+    assert len(row["same_label_iou_at_adapted_threshold"]) == len(row["truth"])
+    result = json.loads(Path("outputs/conditional_detr_detection_result.json").read_text(encoding="utf-8"))
+    assert result["adaptation"]["adapted_threshold"] == ns["adapted_threshold"]
+    assert result["adaptation"]["held_out_at_adapted_threshold"]["threshold"] == ns["ADAPTED_THRESHOLD"]
+    header = Path("outputs/conditional_detr_detection_detections.csv").read_text(encoding="utf-8").splitlines()[0]
+    assert header.endswith(",threshold")
+
+
+# ---------------------------------------------------------------- FIX_PACKET addendum: google.colab stubs carry a spec
+
+
+@pytest.mark.parametrize("real_google", [False, True])
+def test_worker_colab_stubs_have_specs(monkeypatch, real_google):
+    """Colab only: accelerate calls importlib.util.find_spec("google.colab"), which raised on the spec-less stub."""
+    import ast
+    import importlib.util
+
+    nb = _notebook()
+    router = [_source(c) for c in nb["cells"] if c["cell_type"] == "code"][1]
+    worker = next(
+        node.value.value
+        for node in ast.parse(router).body
+        if isinstance(node, ast.Assign) and getattr(node.targets[0], "id", "") == "_WORKER_SOURCE"
+    )
+    start = worker.index('if os.environ.get("DIMER_KERNEL_IS_COLAB") == "1":')
+    shim = worker[start : worker.index('_main = types.ModuleType("__main__")', start)]
+    fake_google = types.ModuleType("google")
+    fake_google.__path__ = []
+    monkeypatch.setitem(sys.modules, "google", fake_google if real_google else None)
+    monkeypatch.delitem(sys.modules, "google.colab", raising=False)
+    monkeypatch.delitem(sys.modules, "google.colab.files", raising=False)
+    monkeypatch.setenv("DIMER_KERNEL_IS_COLAB", "1")
+    try:
+        exec(compile(shim, "worker-colab-shim", "exec"), {"os": __import__("os"), "sys": sys, "types": types, "_send": None, "_recv": None})
+        for name in ("google.colab", "google.colab.files"):
+            spec = importlib.util.find_spec(name)  # raised ValueError before the fix
+            assert spec is not None and spec.name == name
+        assert sys.modules["google.colab"].__path__ == [] and callable(sys.modules["google.colab.files"].upload)
+        if not real_google:
+            assert importlib.util.find_spec("google") is not None
+    finally:
+        for name in ("google", "google.colab", "google.colab.files"):
+            sys.modules.pop(name, None)  # monkeypatch then restores whatever was there before

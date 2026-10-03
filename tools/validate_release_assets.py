@@ -67,6 +67,14 @@ CODE_MARKERS = (
     "if len(det_orig) != len(det_reloaded):",
     # CDT-M2 (review 2026-10-02): the held-out decision view at the operating threshold, and the reload helper reused by BYOD.
     "operating_check = threshold_check(adapter, held_out, threshold)",
+    # CDT-M2 option B (Kurt, 2026-10-04): an adapted threshold chosen on the TRAINING split only, shown next to the 0.7 view.
+    "adapted_threshold = select_adapted_threshold(adapter, train_records)",
+    "adapted_check = threshold_check(adapter, held_out, ADAPTED_THRESHOLD)",
+    "'same_label_iou_at_adapted_threshold': ious_adapted",
+    "'adapted_threshold': adapted_threshold,",
+    "byod_threshold = select_adapted_threshold(byod_pipe, byod_train)",
+    # FIX_PACKET addendum: the isolated worker's google.colab stubs carry a ModuleSpec (accelerate calls find_spec).
+    "importlib.machinery.ModuleSpec(name, None, is_package=package)",
     "reload_check = reload_equivalence(adapter, reloaded, new_records[0]['image'])",
     "'best_same_label_at_evaluation_threshold': best_at_evaluation_threshold",
     "'held_out_at_operating_threshold': operating_check",
@@ -101,6 +109,7 @@ MARKDOWN_MARKERS = (
     "**AP is computed at the evaluation threshold.**",
     "**What the recorded runs show.** At 0.7 the adapted model returned **no** boxes",
     "**Scores and thresholds.**",
+    "**An adapted threshold, chosen on the training split only.**",
     # CDT-M3: every fine-tune starts from the re-headed model; the activity names its re-run range.
     "**Adaptation always starts from the re-headed model.**",
     # CDT-M4: the guided layer of a GUIDED notebook (NOTEBOOK_SPEC 2.2 GDL1-GDL14).
@@ -153,6 +162,7 @@ STALE_MARKDOWN = (
     "The adapted pipeline detects the new sign classes",  # CDT-M2
     "Runtimes are not measured in this revision",  # CDT-m2
     "Change `FREEZE_BACKBONE` to `False` and compare held-out AP and runtime",  # CDT-M3
+    "This tutorial does not choose a separate operating threshold",  # CDT-M2 option B
     "@@",  # an unfilled number placeholder of the template
 )
 MODEL_CARD_SPEC = "1.2"
