@@ -1,0 +1,176 @@
+[colab] Parsing notebook '/home/kurt/colab-runs/conditional-detr-detection-pipeline-fd008c1-79608e/conditional_detr_detection_colab_fd008c1_colab-cli-t4.ipynb'...
+[colab] Executing cell 1/16 - Infrastructure: install the locked runtime into an isolated environment...
+{'isolated_environment': '/content/dimer_isolated_env', 'isolated_python': '3.12.12', 'kernel_python': '3.13.15', 'locked_packages': 49, 'setup_seconds': 52}
+[colab] Executing cell 2/16 - Route the remaining cells to the isolated environment...
+Every later code cell now runs in /content/dimer_isolated_env/bin/python (pid 2609).
+[colab] Executing cell 3/16 - conditional_detr_detection-07...
+{'notebook_source': {'repository': 'conditional-detr-detection-pipeline', 'repository_revision': '121b58b1d0ac40e80ed8c43ab2556801aa29bf72', 'embedded_module': 'src/conditional_detr_detection_pipeline/pipeline.py', 'embedded_modules': ['src/conditional_detr_detection_pipeline/pipeline.py', 'src/conditional_detr_detection_pipeline/samples.py'], 'module_sha256': '30c31004fd19c54a7337a9f093c9351001edb234648323bca38007ab7ac14385', 'generator': 'build_notebook.py/2.1', 'notebook_spec': '2.2'}, 'python': '3.12.12', 'torch': '2.14.0+cu130', 'transformers': '4.57.6', 'timm': '1.0.29', 'scipy': '1.18.1', 'numpy': '2.5.3', 'PIL': '11.3.0', 'cuda': True}
+[colab] Executing cell 4/16 - conditional_detr_detection-09...
+[colab] Executing cell 5/16 - conditional_detr_detection-11...
+[colab] Executing cell 6/16 - conditional_detr_detection-13...
+{'model_id': 'microsoft/conditional-detr-resnet-50', 'revision': '8f8795fb7c319c7862d4f4cd699e76bb09cf2593', 'license': 'apache-2.0', 'files': 4, 'total_bytes': 174178149}
+{'weights_dir': '/content/weights/conditional-detr-resnet-50', 'fetched': ['README.md', 'config.json', 'model.safetensors', 'preprocessor_config.json']}
+{'verified_files': 4, 'revision': '8f8795fb7c319c7862d4f4cd699e76bb09cf2593'}
+{'device': 'cuda:0', 'source': '/content/weights/conditional-detr-resnet-50'}
+[colab] Executing cell 7/16 - conditional_detr_detection-15...
+{'MIN_IMAGE_SIDE': 16, 'MAX_IMAGE_SIDE': 4096, 'MAX_DETECTIONS': 300, 'label_slots': 91, 'unannotated_slots': 11, 'DETECTION_THRESHOLD': 0.7}
+{'sample_kind': 'synthetic', 'size': [640, 480], 'sha256': 'ff819833457d69be', 'references': {'stop sign': 1, 'traffic light': 1, 'clock': 1, 'sports ball': 1}}
+{'verdict': 'accepted', 'findings': [{'probe': 'threshold=1.5', 'rejected': 'threshold must be a number in [0, 1], got 1.5'}], 'inputs': [{'id': 'tutorial-scene', 'mode': 'RGB', 'size': [640, 480]}]}
+     stop sign 0.871  [53, 94, 167, 216]
+         clock 0.797  [409, 73, 550, 218]
+{'verdict': 'sample-sanity', 'n_detections': 2}
+         stop sign-0  box_iou 0.850  same-label detections 1
+     traffic light-0  box_iou 0.000  same-label detections 0
+             clock-0  box_iou 0.918  same-label detections 1
+       sports ball-0  box_iou 0.000  same-label detections 0
+2/4 drawn objects matched at IoU >= 0.5
+<PIL.Image.Image image mode=RGB size=640x480 at 0x7893ECB46090>
+
+[Image saved to: /tmp/tmpdcfirsq4.png]
+[colab] Executing cell 8/16 - conditional_detr_detection-17...
+{
+  "blank": {
+    "at_default_threshold": 0,
+    "at_evaluation_threshold": 0,
+    "cap": 300,
+    "top": []
+  },
+  "noise": {
+    "at_default_threshold": 0,
+    "at_evaluation_threshold": 156,
+    "cap": 300,
+    "top": [
+      [
+        "orange",
+        0.117
+      ],
+      [
+        "apple",
+        0.11
+      ],
+      [
+        "fire hydrant",
+        0.104
+      ]
+    ]
+  }
+}
+[colab] Executing cell 9/16 - conditional_detr_detection-19...
+{
+  "n_records": 40,
+  "n_boxes": 82,
+  "class_names": [
+    "stop-sign",
+    "yield-sign",
+    "speed-limit-sign"
+  ],
+  "boxes_per_class": {
+    "stop-sign": 21,
+    "yield-sign": 34,
+    "speed-limit-sign": 27
+  },
+  "epochs": 10,
+  "findings": [],
+  "verdict": "accepted"
+}
+<PIL.Image.Image image mode=RGB size=480x320 at 0x7893ECB2AD80>
+
+[Image saved to: /tmp/tmpvskc5_wh.png]
+[colab] Executing cell 10/16 - conditional_detr_detection-21...
+{'train': 30, 'held_out': 10, 'train_boxes': 65, 'held_out_boxes': 17}
+Some weights of ConditionalDetrForObjectDetection were not initialized from the model checkpoint at /content/weights/conditional-detr-resnet-50 and are newly initialized because the shapes did not match:
+- class_labels_classifier.bias: found shape torch.Size([91]) in the checkpoint and torch.Size([3]) in the model instantiated
+- class_labels_classifier.weight: found shape torch.Size([91, 256]) in the checkpoint and torch.Size([3, 256]) in the model instantiated
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+{'class_names': ['stop-sign', 'yield-sign', 'speed-limit-sign'], 'device': 'cuda:0', 'reinitialised': ['class_labels_classifier.weight', 'class_labels_classifier.bias']}
+{
+  "ap": 0.0,
+  "ap50": 0.0,
+  "per_class_ap50": {
+    "stop-sign": 0.0,
+    "yield-sign": 0.0,
+    "speed-limit-sign": 0.0
+  },
+  "n_references": 17
+}
+[colab] Executing cell 11/16 - conditional_detr_detection-23...
+epoch 1/10  loss 1.3464
+epoch 2/10  loss 1.1591
+epoch 3/10  loss 1.0539
+epoch 4/10  loss 0.9122
+epoch 5/10  loss 0.8195
+epoch 6/10  loss 0.7461
+epoch 7/10  loss 0.6693
+epoch 8/10  loss 0.5863
+epoch 9/10  loss 0.5601
+epoch 10/10  loss 0.5423
+{
+  "freeze_backbone": true,
+  "trainable_parameters": 19940873,
+  "total_parameters": 43395785,
+  "epochs": 10,
+  "batch_size": 4,
+  "learning_rate": 0.0001,
+  "optimizer": "AdamW",
+  "precision": "float32",
+  "device": "cuda:0",
+  "first_epoch_loss": 1.3464,
+  "final_loss": 0.5423,
+  "train_seconds": 34.2
+}
+[colab] Executing cell 12/16 - conditional_detr_detection-25...
+metric     baseline    adapted     change
+ap           0.0000     0.7722    +0.7722
+ap50         0.0000     0.8851    +0.8851
+ap75         0.0000     0.8851    +0.8851
+per-class AP50: {'stop-sign': 0.901, 'yield-sign': 0.7542, 'speed-limit-sign': 1.0}
+{'evaluation_threshold': 0.05, 'max_detections_scored_per_image': 100}
+adapted operating threshold, chosen on the training split only: {'threshold': 0.2546, 'selected_on': 'training split', 'rule': 'max F1 at IoU >= 0.5, same label', 'train_f1': 0.6055, 'train_precision': 0.75, 'train_recall': 0.5077, 'train_images': 30}
+held-out at the COCO threshold:      {'threshold': 0.7, 'returned': 0, 'correct': 0, 'references': 17, 'precision': None, 'recall': 0.0, 'highest_score': 0.2792}
+held-out at the adapted threshold:   {'threshold': 0.2546, 'returned': 8, 'correct': 6, 'references': 17, 'precision': 0.75, 'recall': 0.3529, 'highest_score': 0.2792}
+run history (one row per evaluation; row 0 is the first run of this session):
+0 {'freeze_backbone': True, 'epochs': 10, 'learning_rate': 0.0001, 'first_epoch_loss': 1.3464, 'final_loss': 0.5423, 'ap': 0.7722, 'ap50': 0.8851, 'returned_at_threshold': 0, 'adapted_threshold': 0.2546, 'correct_at_adapted_threshold': 6, 'train_seconds': 34.2}
+[colab] Executing cell 13/16 - conditional_detr_detection-27...
+{"id": "sign-99-000", "truth": ["yield-sign", "yield-sign"], "threshold": 0.7, "detections": [], "same_label_iou": [0.0, 0.0], "adapted_threshold": 0.2546, "detections_at_adapted_threshold": [["yield-sign", 0.264], ["yield-sign", 0.259], ["yield-sign", 0.259]], "same_label_iou_at_adapted_threshold": [0.888, 0.892], "highest_score": 0.264, "best_same_label_at_evaluation_threshold": [{"iou": 0.923, "score": 0.103}, {"iou": 0.918, "score": 0.18}]}
+{"id": "sign-99-001", "truth": ["speed-limit-sign", "yield-sign"], "threshold": 0.7, "detections": [], "same_label_iou": [0.0, 0.0], "adapted_threshold": 0.2546, "detections_at_adapted_threshold": [["yield-sign", 0.261]], "same_label_iou_at_adapted_threshold": [0.0, 0.904], "highest_score": 0.261, "best_same_label_at_evaluation_threshold": [{"iou": 0.925, "score": 0.217}, {"iou": 0.951, "score": 0.176}]}
+{"id": "sign-99-002", "truth": ["stop-sign"], "threshold": 0.7, "detections": [], "same_label_iou": [0.0], "adapted_threshold": 0.2546, "detections_at_adapted_threshold": [], "same_label_iou_at_adapted_threshold": [0.0], "highest_score": 0.169, "best_same_label_at_evaluation_threshold": [{"iou": 0.934, "score": 0.16}]}
+0/5 reference boxes found at the COCO threshold 0.7 (same label, IoU >= 0.5)
+3/5 reference boxes found at the adapted threshold 0.2546 (chosen on the training split)
+[colab] Executing cell 14/16 - conditional_detr_detection-29...
+{
+  "path": "outputs/conditional_detr_adapter.safetensors",
+  "bytes": 79800004,
+  "sha256": "feac22ec53f9c16da41108ec866480e22c9dff458951ffef8c6b203b7d3cadaf",
+  "format": "conditional-detr-adapter-v1",
+  "class_names": [
+    "stop-sign",
+    "yield-sign",
+    "speed-limit-sign"
+  ],
+  "tensors": 323,
+  "frozen_prefixes": [
+    "model.backbone."
+  ],
+  "base_state_digest": "e8553b4fa875b7d67d15609e140f969563742b4ee17b75d9095612a8f00d3ed8",
+  "model_id": "microsoft/conditional-detr-resnet-50",
+  "model_revision": "8f8795fb7c319c7862d4f4cd699e76bb09cf2593"
+}
+Some weights of ConditionalDetrForObjectDetection were not initialized from the model checkpoint at /content/weights/conditional-detr-resnet-50 and are newly initialized because the shapes did not match:
+- class_labels_classifier.bias: found shape torch.Size([91]) in the checkpoint and torch.Size([3]) in the model instantiated
+- class_labels_classifier.weight: found shape torch.Size([91, 256]) in the checkpoint and torch.Size([3, 256]) in the model instantiated
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+{'reloaded_source': 'artifact:conditional_detr_adapter.safetensors', 'adapted': True, 'class_names': ['stop-sign', 'yield-sign', 'speed-limit-sign']}
+{'detections_compared': 56, 'threshold': 0.05, 'tolerance': 0.001, 'equivalent': True}
+[colab] Executing cell 15/16 - conditional_detr_detection-31...
+  conditional_detr_adapter.safetensors           79,800,004 bytes
+  conditional_detr_detection_annotated.png           12,052 bytes
+  conditional_detr_detection_detections.csv             417 bytes
+  conditional_detr_detection_evaluation_report.json        1,987 bytes
+  conditional_detr_detection_input_manifest.json        2,600 bytes
+  conditional_detr_detection_result.json             10,287 bytes
+[colab] Executing cell 16/16 - conditional_detr_detection-33...
+refused as expected: non-image object -> TypeError: image must be a PIL.Image.Image, got str
+refused as expected: box outside the image -> ValueError: record 0 box 0 [0.0, 0.0, 9999.0, 10.0] is empty or outside image bounds (640, 640)
+BYOD image branch is off; set USE_BYOD_IMAGE = True to run detection on your own image.
+BYOD dataset branch is off; set USE_BYOD_DATASET = True to adapt Conditional DETR on your own labelled images.
+[colab] Saving notebook with outputs to '/home/kurt/colab-runs/conditional-detr-detection-pipeline-fd008c1-79608e/conditional_detr_detection_colab_fd008c1_colab-cli-t4_output.ipynb'...

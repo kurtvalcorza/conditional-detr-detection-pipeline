@@ -135,8 +135,9 @@ UNANNOTATED_LABEL_IDS: tuple[int, ...] = (0, 12, 26, 29, 30, 45, 66, 68, 69, 71,
 # Detection threshold: the value the pinned README's example passes to post_process_object_detection
 # (threshold=0.7). Conditional DETR is trained with a sigmoid focal loss, so each (query, class) score is an
 # independent sigmoid, not a softmax over classes, and post-processing keeps the top MAX_DETECTIONS pairs
-# over all queries and classes; one query can therefore surface under two labels. The value was not
-# calibrated for any deployment and the deployment owns tuning it on labelled images.
+# over all queries and classes (passed as top_k; the post-processor's own default is 100); one query can
+# therefore surface under two labels. The value was not calibrated for any deployment and the deployment
+# owns tuning it on labelled images.
 DETECTION_THRESHOLD = 0.7
 EVAL_DETECTION_THRESHOLD = 0.05
 MAX_DETECTIONS = 300
@@ -704,8 +705,14 @@ class ConditionalDetrDetectionPipeline:
             outputs = self.model(**inputs)
         if was_training:
             self.model.train()
+        # The post-processor's own default keeps only the top 100 (query, class) pairs; ask for the documented
+        # MAX_DETECTIONS ceiling instead, bounded by the number of pairs the model actually scores.
+        pairs = int(outputs.logits.shape[1]) * int(outputs.logits.shape[2])
         result = self.processor.post_process_object_detection(
-            outputs, threshold=threshold, target_sizes=[(image.height, image.width)]
+            outputs,
+            threshold=threshold,
+            target_sizes=[(image.height, image.width)],
+            top_k=min(MAX_DETECTIONS, pairs),
         )[0]
         detections = []
         for box, label_idx, score in zip(result["boxes"], result["labels"], result["scores"], strict=True):
