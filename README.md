@@ -2,7 +2,7 @@
 
 DIMER pipeline for **Conditional DETR with a ResNet-50 backbone** (`microsoft/conditional-detr-resnet-50`), a DETR variant whose conditional spatial queries in the decoder make training converge faster, trained on COCO 2017 with a sigmoid focal class loss. The pipeline loads the checkpoint only from a digest-verified local snapshot, returns pixel-space boxes with the model's per-class sigmoid score under a caller-owned threshold, and adds a bounded fine-tuning workflow that re-heads it onto a new class vocabulary and exports a SafeTensors adapter.
 
-> **The upstream snapshot is pinned** to Hub commit `8f8795fb7c319c7862d4f4cd699e76bb09cf2593` (pinned 2026-09-25). The manifest records every file's byte size and SHA-256, and each LFS digest matched the Hub's record. A Kaggle T4 default-path run on 2026-09-25 completed only after a manual restart (not a one-pass `Run all`); the 2026-10-03 revision has no hosted run yet; REL12 BYOD exercise pending (see [Release status](#release-status)).
+> **The upstream snapshot is pinned** to Hub commit `8f8795fb7c319c7862d4f4cd699e76bb09cf2593` (pinned 2026-09-25). The manifest records every file's byte size and SHA-256, and each LFS digest matched the Hub's record. A Kaggle T4 default-path run on 2026-09-25 completed only after a manual restart (not a one-pass `Run all`); the review-fix revision (blob `d1c4728430a2`) ran in one pass on a fresh Colab T4 on 2026-10-04 (Colab CLI, no restart, 0 errors); REL12 BYOD exercise pending (see [Release status](#release-status)).
 
 ## Upstream alignment
 
@@ -65,7 +65,7 @@ weights/conditional-detr-resnet-50/
 
 ## Release status
 
-**Candidate.** The snapshot is pinned (`8f8795f`). The 2026-09-25 Kaggle T4 default-path run (commit `8824795`, 14/14 code cells) needed a manual restart after the install cell, so it is not a one-pass `Run all` and not promotion evidence; the 2026-10-03 review-fix revision (uv isolated environment) needs a one-pass hosted run, and the REL12 BYOD exercise is pending. Static checks, unit tests and the tiny-model test do not constitute notebook execution evidence; `docs/release-verification.md` defines the release gate.
+**Candidate.** The snapshot is pinned (`8f8795f`). The 2026-09-25 Kaggle T4 default-path run (commit `8824795`, 14/14 code cells) needed a manual restart after the install cell, so it is not a one-pass `Run all` and not promotion evidence; the review-fix revision (uv isolated environment, blob `d1c4728430a2`) ran in one pass on a fresh Colab Tesla T4 on 2026-10-04 (Colab CLI sequential execution, no restart, 0 errors), and the REL12 BYOD exercise is pending. Static checks, unit tests and the tiny-model test do not constitute notebook execution evidence; `docs/release-verification.md` defines the release gate.
 
 ## Documentation
 

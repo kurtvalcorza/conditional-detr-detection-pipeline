@@ -224,7 +224,7 @@ The following uses are prohibited even where the model would work:
 
 ## Verification records
 
-Default-path execution recorded on 2026-09-25 (Kaggle T4, commit `8824795`, notebook blob `7204a8c9db12`, 14/14 code cells only after a manual restart following the install cell — not a one-pass `Run all`, not promotion evidence); the 2026-10-03 revision of the tutorial (isolated `uv` environment, review fixes) has a local CPU pre-flight only; REL12 BYOD exercise pending before promotion. The measured values are listed under Performance Measures. The offline test suite runs a tiny random-weight Conditional DETR through fine-tuning, evaluation and adapter reload; that exercises the code path and is not a result about this model. `docs/release-verification.md` holds the release gate and the record table.
+Default-path execution recorded on 2026-09-25 (Kaggle T4, commit `8824795`, notebook blob `7204a8c9db12`, 14/14 code cells only after a manual restart following the install cell — not a one-pass `Run all`, not promotion evidence); the review-fix revision of the tutorial (isolated `uv` environment, blob `d1c4728430a2`) ran in one pass on a fresh Colab Tesla T4 on 2026-10-04 (Colab CLI sequential execution, no restart, 0 errors); REL12 BYOD exercise pending before promotion. The measured values are listed under Performance Measures. The offline test suite runs a tiny random-weight Conditional DETR through fine-tuning, evaluation and adapter reload; that exercises the code path and is not a result about this model. `docs/release-verification.md` holds the release gate and the record table.
 
 ## References
 
