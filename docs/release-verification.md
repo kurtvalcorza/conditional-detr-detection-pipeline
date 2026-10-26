@@ -4,6 +4,8 @@
 
 The upstream snapshot is pinned to `8f8795fb7c319c7862d4f4cd699e76bb09cf2593` and the notebook is regenerated with that revision and manifest, so it can run. A default-path execution was recorded on 2026-09-25 (Kaggle T4; record below), but it completed only after a manual restart, so it is **not** a one-pass `Run all` and not promotion evidence. Since 2026-10-03 the notebook runs in an isolated `uv` environment (no in-kernel install, no restart; Linux x86_64 runtimes only) and carries the 2026-10-02 review's fixes; its current blob `d1c4728430a2` (commit `fd008c1`) ran in one pass on a fresh Colab Tesla T4 on 2026-10-04 (Colab CLI sequential execution, no restart, 0 errors; record below). REL12 (step 7, the BYOD dataset exercise) and a human review of the guided layer are outstanding, so the status stays Candidate.
 
+The current blob `363ecdf5` (code commit `312abd7`) shows a refused BYOD input as one `Refused: <file>: <reason>` line with no traceback, removes the earlier run's results and `outputs/` files and stops Run all at that cell, while genuine failures keep their traceback (NOTEBOOK_SPEC DAT19/DAT20); its hosted Colab T4 runs (the default path and a scripted refusal, `USE_BYOD_IMAGE=True;BYOD_IMAGE_PATH='/etc/hostname'`) are pending, and the hosted runs of earlier blobs, including `d1c4728430a2`, are history for it (REL14).
+
 ## Automatic coverage (static and unit, every pull request)
 
 CI installs the pinned CPU-only torch wheel and the other runtime pins, then runs:

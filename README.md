@@ -67,6 +67,8 @@ weights/conditional-detr-resnet-50/
 
 **Candidate.** The snapshot is pinned (`8f8795f`). The 2026-09-25 Kaggle T4 default-path run (commit `8824795`, 14/14 code cells) needed a manual restart after the install cell, so it is not a one-pass `Run all` and not promotion evidence; the review-fix revision (uv isolated environment, blob `d1c4728430a2`) ran in one pass on a fresh Colab Tesla T4 on 2026-10-04 (Colab CLI sequential execution, no restart, 0 errors), and the REL12 BYOD exercise is pending. Static checks, unit tests and the tiny-model test do not constitute notebook execution evidence; `docs/release-verification.md` defines the release gate.
 
+The current blob `363ecdf5` (code commit `312abd7`) shows a refused BYOD input as one `Refused: <file>: <reason>` line with no traceback, removes the earlier run's results and `outputs/` files and stops Run all at that cell, while genuine failures keep their traceback (NOTEBOOK_SPEC DAT19/DAT20); its hosted Colab T4 runs (the default path and a scripted refusal, `USE_BYOD_IMAGE=True;BYOD_IMAGE_PATH='/etc/hostname'`) are pending, and the hosted runs of earlier blobs, including `d1c4728430a2`, are history for it (REL14).
+
 ## Documentation
 
 - `MODEL_CARD.md`: MODEL_CARD_SPEC 1.2 card, provenance, input/output contract.
